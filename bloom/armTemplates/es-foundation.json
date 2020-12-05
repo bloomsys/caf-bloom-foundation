@@ -237,9 +237,9 @@
             "diagnosticsAndSecurity": "[uri(deployment().properties.templateLink.uri, 'auxiliary/diagnosticsAndSecurity.json')]",
             "landingZone": "[uri(deployment().properties.templateLink.uri, 'auxiliary/lz.json')]"
         },
-        "moveSubscription": "[concat(parameters('enterpriseScaleCompanyPrefix'), '-management', '/', parameters('managementSubscriptionId'))]",
-        "noSubscription": "[concat(parameters('enterpriseScaleCompanyPrefix'), '-management', '/', 'na')]",
-        "noLzSubscription": "[concat(parameters('enterpriseScaleCompanyPrefix'), '-online', '/', 'nalz')]",
+        "moveSubscription": "[concat(parameters('enterpriseScaleCompanyPrefix'), '-management-mg', '/', parameters('managementSubscriptionId'))]",
+        "noSubscription": "[concat(parameters('enterpriseScaleCompanyPrefix'), '-management-mg', '/', 'na')]",
+        "noLzSubscription": "[concat(parameters('enterpriseScaleCompanyPrefix'), '-online-mg', '/', 'nalz')]",
         "deploymentNames": {
             "mgmtGroupDeploymentName": "[take(concat('EntScale-Mgs', '-', deployment().location, guid(parameters('enterpriseScaleCompanyPrefix'))), 64)]",
             "policyDeploymentName": "[take(concat('EntScale-Policy', '-', deployment().location, guid(parameters('enterpriseScaleCompanyPrefix'))), 64)]",
@@ -330,7 +330,7 @@
             "condition": "[not(empty(parameters('lzSubscriptionId')))]",
             "type": "Microsoft.Management/managementGroups/subscriptions",
             "apiVersion": "2020-05-01",
-            "name": "[if(not(empty(parameters('lzSubscriptionId'))), concat(parameters('enterpriseScaleCompanyPrefix'), '-online', '/', parameters('lzSubscriptionId')[copyIndex()]), variables('noLzSubscription'))]",
+            "name": "[if(not(empty(parameters('lzSubscriptionId'))), concat(parameters('enterpriseScaleCompanyPrefix'), '-online-mg', '/', parameters('lzSubscriptionId')[copyIndex()]), variables('noLzSubscription'))]",
             "dependsOn": [
                 "[variables('deploymentNames').mgmtGroupDeploymentName]"
             ],
@@ -344,7 +344,7 @@
             "condition": "[and(not(empty(parameters('managementSubscriptionId'))),equals(parameters('enableLogAnalytics'), 'Yes'))]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
-            "scope": "[concat('Microsoft.Management/managementGroups/', parameters('enterpriseScaleCompanyPrefix'), '-management')]",
+            "scope": "[concat('Microsoft.Management/managementGroups/', parameters('enterpriseScaleCompanyPrefix'), '-management-mg')]",
             "name": "[variables('deploymentNames').monitoringDeploymentName]",
             "dependsOn": [
                 "[variables('deploymentNames').policyDeploymentName]",
@@ -430,7 +430,7 @@
             "condition": "[or(or(equals(parameters('enableVmBackup'), 'Yes'), equals(parameters('enableSqlAudit'), 'Yes')), equals(parameters('enableSqlEncryption'), 'Yes'), equals(parameters('enableStorageHttps'), 'Yes'))]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
-            "scope": "[concat('Microsoft.Management/managementGroups/', parameters('enterpriseScaleCompanyPrefix'), '-landingzones')]",
+            "scope": "[concat('Microsoft.Management/managementGroups/', parameters('enterpriseScaleCompanyPrefix'), '-landingzones-mg')]",
             "name": "[variables('deploymentNames').lzDeploymentName]",
             "dependsOn": [
                 "[variables('deploymentNames').policyDeploymentName]",
